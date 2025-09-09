@@ -1,0 +1,25 @@
+CONTRATO DE ARRENDAMIENTO DE VIVIENDA URBANA
+
+Entre los suscritos a saber: {{NOMBRE_ARRENDADOR}}, mayor de edad, identificado con la cédula de ciudadanía número {{CEDULA_ARRENDADOR}}, quien en adelante se denominará EL ARRENDADOR, y {{NOMBRE_ARRENDATARIO}}, mayor de edad, identificado con la cédula de ciudadanía número {{CEDULA_ARRENDATARIO}}, quien en adelante se denominará EL ARRENDATARIO, hemos celebrado el presente Contrato de Arrendamiento de Vivienda Urbana, que se rige por las siguientes cláusulas:
+
+PRIMERA. OBJETO: EL ARRENDADOR entrega a EL ARRENDATARIO a título de arrendamiento, el goce del inmueble ubicado en la dirección {{DIRECCION_INMUEBLE}} de la ciudad de {{CIUDAD_INMUEBLE}}.
+
+SEGUNDA. CANON DE ARRENDAMIENTO: El valor del canon mensual de arrendamiento es la suma de {{VALOR_CANON_LETRAS}} ($ {{VALOR_CANON_NUMEROS}}) moneda corriente, que EL ARRENDATARIO se obliga a pagar de forma anticipada dentro de los primeros cinco (5) días de cada mes.
+
+TERCERA. DURACIÓN: El término de duración del presente contrato es de {{DURACION_CONTRATO_MESES}} meses, contados a partir del día {{DIA_INICIO}} de {{MES_INICIO}} del año {{ANO_INICIO}}.
+
+... (Puedes añadir más cláusulas a la plantilla) ...
+
+Para constancia se firma en la ciudad de {{CIUDAD_FIRMA}}, a los {{DIA_FIRMA}} días del mes de {{MES_FIRMA}} del año {{ANO_FIRMA}}.
+
+
+_________________________
+EL ARRENDADOR
+Nombre: {{NOMBRE_ARRENDADOR}}
+C.C.: {{CEDULA_ARRENDADOR}}
+
+
+_________________________
+EL ARRENDATARIO
+Nombre: {{NOMBRE_ARRENDATARIO}}
+C.C.: {{CEDULA_ARRENDATARIO}}

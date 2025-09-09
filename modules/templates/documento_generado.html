@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Documento Generado Exitosamente</h2>
+    <p>Copia el siguiente texto o guárdalo como un documento oficial.</p>
+    <div class="card">
+        <div class="card-body">
+            <pre>{{ document_content }}</pre>
+        </div>
+    </div>
+    <a href="{{ url_for('drafting.select_document') }}" class="btn btn-secondary mt-3">Crear otro documento</a>
+</div>
+{% endblock %}

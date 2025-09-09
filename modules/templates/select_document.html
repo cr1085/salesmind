@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Asistente de Redacción</h2>
+    <p>Selecciona el tipo de documento que deseas generar.</p>
+    <div class="list-group">
+        <a href="{{ url_for('drafting.draft_arrendamiento') }}" class="list-group-item list-group-item-action">
+            Contrato de Arrendamiento de Vivienda Urbana
+        </a>
+        </div>
+</div>
+{% endblock %}

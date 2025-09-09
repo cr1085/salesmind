@@ -40,6 +40,11 @@ def create_app():
     from .admin.routes import admin_bp
     app.register_blueprint(admin_bp)
     # --- FIN DEL CAMBIO ---
+
+    # --- AÑADIR ESTAS LÍNEAS ---
+    from .drafting.routes import drafting_bp
+    app.register_blueprint(drafting_bp)
+    # --- FIN ---
     
     @app.cli.command('init-db')
     def init_db_command():

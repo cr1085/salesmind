@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Redactar Contrato de Arrendamiento</h2>
+    <p>Por favor, completa todos los campos para generar el documento.</p>
+    <form method="POST">
+        {% for placeholder in placeholders %}
+        <div class="mb-3">
+            <label for="{{ placeholder }}" class="form-label">{{ placeholder.replace('_', ' ').title() }}</label>
+            <input type="text" class="form-control" id="{{ placeholder }}" name="{{ placeholder }}" required>
+        </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary">Generar Documento</button>
+    </form>
+</div>
+{% endblock %}
