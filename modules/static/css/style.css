@@ -121,7 +121,7 @@ nav a {
 }
 
 .user-message {
-    background-color: #3498db;
+    background-color: #198754;
     color: white;
     align-self: flex-end;
     border-bottom-right-radius: 4px;
@@ -149,7 +149,7 @@ nav a {
 }
 
 #send-btn {
-    background-color: #2ecc71;
+    background-color: #198754;
     color: white;
     border: none;
     padding: 10px 20px;
