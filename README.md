@@ -1,39 +1,61 @@
-# LexIA Junior: Asistente Jurídico Inteligente con RAG
+# **LexIA Pro: Asistente de Redacción Jurídica con IA**
 
-**LexIA Junior** es una aplicación web avanzada que funciona como un asistente legal especializado. Utilizando una arquitectura de Generación Aumentada por Recuperación (RAG) sobre una base de conocimiento personalizable, LexIA puede analizar múltiples documentos legales y responder preguntas complejas con respuestas naturales, conversacionales y basadas en fuentes verificables.
+**LexIA Pro** representa la siguiente evolución en asistentes legales de IA. Más allá de las simples preguntas y respuestas, esta aplicación funciona como un socio activo en el proceso de redacción legal. Al combinar un potente motor de consulta basado en RAG con un nuevo módulo de generación de documentos basado en plantillas, LexIA Pro puede responder preguntas legales complejas y ayudar en la creación de documentos legales estructurados, como contratos.
 
-Este proyecto demuestra la implementación de un sistema de IA robusto, con una personalidad definida y una interfaz de usuario amigable, ideal para asistir a profesionales del derecho en sus tareas de investigación y consulta.
+Este proyecto es una muestra de un sistema de IA híbrido capaz tanto de recuperar conocimientos como de crear documentos, acelerando significativamente los flujos de trabajo legales.
 
----
+### ⭐ **Características principales**
 
-### ⭐ Características Avanzadas
+-   **Funcionalidad de modo dual:** funciona como **consultor legal** (respondiendo preguntas basadas en su base de conocimientos) y como **redactor asistente** (generando documentos a partir de plantillas).
+    
+-   **Módulo de Generación de Documentos:** Una nueva funcionalidad que permite a los usuarios seleccionar una plantilla de documento (por ejemplo, un contrato de alquiler) y completarlo a través de un formulario guiado, generando un documento completo y listo para usar.
+    
+-   **Base de conocimiento de múltiples documentos:** puede indexar y consultar múltiples archivos PDF simultáneamente, creando un "cerebro" legal unificado.
+    
+-   **IA conversacional con personalidad:** utiliza indicaciones refinadas para responder en un tono natural y didáctico, simulando un verdadero asistente junior.
+    
+-   **Búsqueda semántica de alta precisión:** emplea un recuperador de compresión contextual para garantizar que solo se utilice la información más relevante para responder preguntas, maximizando la precisión.
+    
+-   **Cita de la fuente:** Todas las respuestas consultivas están respaldadas por una lista de los documentos fuente utilizados, lo que garantiza la transparencia y la confianza.
+    
+-   **Motor de inteligencia artificial configurable:** cambie fácilmente entre un modelo local ( **Ollama** ) para privacidad o un modelo en la nube ( **API de Google Gemini** ) para facilitar la implementación.
+    
 
-* **Base de Conocimiento Multi-Documento:** Capacidad para indexar y consultar simultáneamente varios archivos PDF (leyes, códigos, manuales, contratos), creando un "cerebro" legal unificado.
-* **IA Conversacional con Personalidad:** Gracias a un sistema de prompts refinado, LexIA no solo extrae datos, sino que responde de manera amable y didáctica, simulando la interacción con un verdadero asistente junior.
-* **Búsqueda Semántica de Alta Precisión:** Utiliza un `retriever` de compresión contextual para filtrar y entregar solo los fragmentos más relevantes al modelo de IA, mejorando drásticamente la precisión de las respuestas.
-* **Citación de Fuentes para Verificabilidad:** Cada respuesta generada está respaldada por una lista de los documentos fuente consultados, garantizando la transparencia y la confianza en la información.
-* **Motor de IA Configurable:** Permite cambiar fácilmente entre un modelo local (privacidad total con **Ollama**) y un modelo en la nube (**Google Gemini API**) a través de una simple variable de entorno.
-* **Interfaz Temática y Profesional:** Incluye un sistema de autenticación, panel de bienvenida personalizado y un diseño de chat con avatares para una experiencia de usuario agradable.
+----------
 
----
+### 🚀 **Demostración de Capacidades**
 
-### 🚀 Demostración de Capacidades
+LexIA Pro puede gestionar una amplia variedad de tareas, desde la consulta hasta la creación:
 
-LexIA Junior puede responder a una amplia gama de preguntas, desde su propio rol hasta detalles específicos del Código Civil o la Constitución. Algunos ejemplos:
+-   **Consulta:**
+    
+    -   `"¿Cuáles son los requisitos para que la promesa de celebrar un contrato sea válida según el Código Civil?"`
+        
+    -   `"Explícame qué es la acción de tutela y en qué casos procede."`
+        
+-   **Apoyo en la redacción (Extracción de cláusulas):**
+    
+    -   `"Proporcióname una cláusula de ejemplo sobre el pago del canon mensual para un contrato de arrendamiento."`
+        
+-   **Generación de documentos:**
+    
+    -   Vaya a la sección “Borrador de documento”, seleccione “Contrato de alquiler” y complete el formulario para generar un contrato completo.
+        
 
-* `Desde tu perspectiva como asistente, ¿cuáles son las habilidades blandas más importantes que debe tener un abogado junior?`
-* `¿Qué es el derecho de petición según la Constitución y quiénes pueden ejercerlo?`
-* `Si una persona encuentra un tesoro en un terreno que no es suyo, ¿a quién le pertenece según el Código Civil?`
+----------
 
----
+### ⚙️ **Pila tecnológica y configuración**
 
-### ⚙️ Stack Tecnológico y Puesta en Marcha
+-   **Backend:** Python, Flask
+    
+-   **Motor de IA:** Ollama (local) / Google Gemini (nube)
+    
+-   **Sistema RAG:** LangChain, FAISS, Transformadores de oraciones
+    
+-   **Base de datos (Usuarios):** SQLite
+    
+-   **Interfaz:** HTML, CSS, JavaScript
 
-* **Backend:** Python, Flask
-* **Motor de IA:** Ollama (local) / Google Gemini (nube)
-* **Sistema RAG:** LangChain, FAISS, Sentence-Transformers
-* **Base de Datos (Usuarios):** SQLite
-* **Frontend:** HTML, CSS, JavaScript
 
 ### Instalación y Puesta en Marcha
 
