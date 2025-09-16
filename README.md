@@ -1,117 +1,146 @@
-# **LexIA Pro: Asistente de Redacción Jurídica con IA**
+SalesMind: Asistente de Ventas con IA para Telegram
+SalesMind es un asistente de ventas conversacional impulsado por un modelo de IA generativa (Google Gemini) y una arquitectura RAG (Generación Aumentada por Recuperación). El bot se conecta a Telegram y está diseñado para responder preguntas de clientes basándose en una base de conocimiento personalizada (catálogos de productos, listas de precios, etc., en formato PDF).
 
-**LexIA Pro** representa la siguiente evolución en asistentes legales de IA. Más allá de las simples preguntas y respuestas, esta aplicación funciona como un socio activo en el proceso de redacción legal. Al combinar un potente motor de consulta basado en RAG con un nuevo módulo de generación de documentos basado en plantillas, LexIA Pro puede responder preguntas legales complejas y ayudar en la creación de documentos legales estructurados, como contratos.
+El proyecto está construido sobre una base de Python y Flask, y está optimizado para ser desplegado en un entorno de producción como un VPS usando Gunicorn y Nginx.
 
-Este proyecto es una muestra de un sistema de IA híbrido capaz tanto de recuperar conocimientos como de crear documentos, acelerando significativamente los flujos de trabajo legales.
+🚀 Características Principales
+Núcleo de IA con RAG: El bot no inventa respuestas. Utiliza una base de datos vectorial (FAISS) creada a partir de tus documentos para encontrar la información más relevante y construir una respuesta precisa.
 
-### ⭐ **Características principales**
+Personalidad de Ventas: El prompt del sistema está cuidadosamente diseñado para que la IA actúe como "SalesMind", un asistente de ventas amigable, eficiente y servicial.
 
--   **Funcionalidad de modo dual:** funciona como **consultor legal** (respondiendo preguntas basadas en su base de conocimientos) y como **redactor asistente** (generando documentos a partir de plantillas).
-    
--   **Módulo de Generación de Documentos:** Una nueva funcionalidad que permite a los usuarios seleccionar una plantilla de documento (por ejemplo, un contrato de alquiler) y completarlo a través de un formulario guiado, generando un documento completo y listo para usar.
-    
--   **Base de conocimiento de múltiples documentos:** puede indexar y consultar múltiples archivos PDF simultáneamente, creando un "cerebro" legal unificado.
-    
--   **IA conversacional con personalidad:** utiliza indicaciones refinadas para responder en un tono natural y didáctico, simulando un verdadero asistente junior.
-    
--   **Búsqueda semántica de alta precisión:** emplea un recuperador de compresión contextual para garantizar que solo se utilice la información más relevante para responder preguntas, maximizando la precisión.
-    
--   **Cita de la fuente:** Todas las respuestas consultivas están respaldadas por una lista de los documentos fuente utilizados, lo que garantiza la transparencia y la confianza.
-    
--   **Motor de inteligencia artificial configurable:** cambie fácilmente entre un modelo local ( **Ollama** ) para privacidad o un modelo en la nube ( **API de Google Gemini** ) para facilitar la implementación.
-    
+Sistema de Cotización: Capaz de responder a preguntas sobre precios y características de productos si esta información se encuentra en los PDFs de la base de conocimiento.
 
-----------
+Traspaso a Humano (Handoff): Detecta cuándo un usuario necesita hablar con una persona y proporciona instrucciones claras para contactar a un asesor.
 
-### 🚀 **Demostración de Capacidades**
+Integración con Telegram: Utiliza la API oficial de Telegram a través de webhooks para una comunicación en tiempo real.
 
-LexIA Pro puede gestionar una amplia variedad de tareas, desde la consulta hasta la creación:
+Arquitectura Escalable: Desplegado con Gunicorn y Nginx, permitiendo que el bot maneje múltiples conversaciones de manera eficiente y corra como un servicio persistente en segundo plano.
 
--   **Consulta:**
-    
-    -   `"¿Cuáles son los requisitos para que la promesa de celebrar un contrato sea válida según el Código Civil?"`
-        
-    -   `"Explícame qué es la acción de tutela y en qué casos procede."`
-        
--   **Apoyo en la redacción (Extracción de cláusulas):**
-    
-    -   `"Proporcióname una cláusula de ejemplo sobre el pago del canon mensual para un contrato de arrendamiento."`
-        
--   **Generación de documentos:**
-    
-    -   Vaya a la sección “Borrador de documento”, seleccione “Contrato de alquiler” y complete el formulario para generar un contrato completo.
-        
+🛠️ Stack Tecnológico
+Backend: Python 3, Flask
 
-----------
+Servidor de Aplicaciones: Gunicorn
 
-### ⚙️ **Pila tecnológica y configuración**
+Proxy Inverso: Nginx
 
--   **Backend:** Python, Flask
-    
--   **Motor de IA:** Ollama (local) / Google Gemini (nube)
-    
--   **Sistema RAG:** LangChain, FAISS, Transformadores de oraciones
-    
--   **Base de datos (Usuarios):** SQLite
-    
--   **Interfaz:** HTML, CSS, JavaScript
+IA y Embeddings:
 
+Modelo Generativo: Google Gemini (gemini-1.5-flash-latest)
 
-### Instalación y Puesta en Marcha
+Modelo de Embeddings: Google (text-embedding-004)
 
-Sigue estos pasos para ejecutar el proyecto en un entorno local.
+Orquestación de IA (RAG): LangChain
 
-#### 1. Prerrequisitos
-* Python 3.10+
-* (Opcional, para modo local) [Ollama](https://ollama.com/) instalado y ejecutándose.
+Base de Datos Vectorial: FAISS (Facebook AI Similarity Search)
 
-#### 2. Clonar el Repositorio
-```bash
-git clone [https://github.com/tu-usuario/tu-repositorio.git](https://github.com/tu-usuario/tu-repositorio.git)
-cd tu-repositorio
-```
+Gestión de Dependencias: Pip, venv
 
-#### 3. Entorno Virtual y Dependencias
-```bash
-# Crear y activar entorno virtual
-python -m venv venv
-# En Windows:
-venv\Scripts\activate
-# En macOS/Linux:
+📂 Estructura del Proyecto
+/SalesMind/
+|
+|-- app.py                  # Punto de entrada principal de la aplicación Flask.
+|-- indexer.py              # Script para procesar los PDFs y crear el índice FAISS.
+|-- config.py               # Centraliza la configuración (claves API, rutas).
+|-- .env                    # Archivo para almacenar las variables de entorno (claves secretas).
+|-- requirements.txt        # Lista de dependencias de Python.
+|
+|-- /modules/                 # Módulos principales de la aplicación.
+|   |-- /assistant/
+|   |   |-- core.py         # Lógica central del RAG y la comunicación con la API de IA.
+|   |
+|   |-- /bot/
+|       |-- routes.py       # Define el endpoint del webhook para Telegram.
+|
+|-- /biblioteca_pdfs/         # Carpeta donde debes colocar tus catálogos en PDF.
+|
+|-- /faiss_index_maestra/     # Carpeta donde se guarda el índice vectorial generado.
+|
+|-- /venv/                    # Entorno virtual de Python.
+
+⚙️ Guía de Instalación y Despliegue
+Sigue estos pasos para poner en marcha el proyecto en un servidor VPS (ej. Contabo).
+
+1. Clonar el Repositorio
+Conéctate a tu servidor y clona el proyecto desde GitHub.
+
+git clone git@github.com:tu_usuario/SalesMind.git
+cd SalesMind
+
+2. Configurar el Entorno
+# Crear un entorno virtual
+python3 -m venv venv
+
+# Activar el entorno
 source venv/bin/activate
 
-# Instalar dependencias
+# Instalar las dependencias
 pip install -r requirements.txt
-```
 
-#### 4. Configurar Variables de Entorno
-Crea un archivo `.env` en la raíz del proyecto y añade las siguientes variables:
+3. Configurar Variables de Entorno
+Crea un archivo .env en la raíz del proyecto para almacenar tus claves secretas.
 
-```
-# Clave secreta para la seguridad de Flask
-SECRET_KEY="una-clave-muy-secreta-y-dificil-de-adivinar"
+nano .env
 
-# Elige el motor de IA. Opciones: "ollama" o "google"
-AI_PROVIDER="google"
+Añade el siguiente contenido, reemplazando con tus valores reales:
 
-# Pega tu clave de API si vas a usar el modo 'google'
-GOOGLE_API_KEY="AIzaSy...tu_clave_de_google_aqui"
-```
+GOOGLE_API_KEY="AIzaSy...tu_clave_de_google"
+TELEGRAM_TOKEN="12345:ABC...tu_token_de_telegram"
+SECRET_KEY="una_cadena_de_texto_larga_y_secreta_para_flask"
 
-#### 5. Crear la Base de Conocimiento
-1.  Coloca todos los documentos PDF que el asistente debe estudiar en la carpeta `/biblioteca_pdfs`.
-2.  Ejecuta el script indexador **una sola vez**. Este proceso puede tardar varios minutos.
-    ```bash
-    python indexer.py
-    ```
+4. Crear la Base de Conocimiento
+Sube tus catálogos de productos y servicios en formato PDF a la carpeta /biblioteca_pdfs.
 
-#### 6. Inicializar la Base de Datos de Usuarios
-```bash
-flask init-db
-```
+Ejecuta el script indexer.py para procesar los PDFs y crear la base de datos vectorial.
 
-#### 7. Ejecutar la Aplicación
-```bash
-flask run
-```
-La aplicación estará disponible en `http://127.0.0.1:5000`.
+# Asegúrate de que tu entorno virtual esté activado
+python indexer.py
+
+Este proceso creará la carpeta faiss_index_maestra.
+
+5. Desplegar con Gunicorn y Nginx
+Crear el Servicio systemd: Para que el bot corra como un servicio en segundo plano.
+
+sudo nano /etc/systemd/system/salesmind.service
+
+Pega la siguiente configuración:
+
+[Unit]
+Description=Gunicorn instance to serve SalesMind
+After=network.target
+
+[Service]
+User=tu_usuario
+Group=www-data
+WorkingDirectory=/home/tu_usuario/SalesMind
+ExecStart=/home/tu_usuario/SalesMind/venv/bin/gunicorn -w 4 -b 127.0.0.1:8001 app:app
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
+Configurar Nginx: Para exponer el bot a internet. Edita tu archivo de configuración de Nginx (ej. /etc/nginx/sites-available/default) y añade una nueva location para el bot.
+
+location /salesmind/ {
+    rewrite ^/salesmind(/.*)$ $1 break;
+    proxy_pass [http://127.0.0.1:8001](http://127.0.0.1:8001);
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+}
+
+Activar los Servicios:
+
+# Iniciar y habilitar el servicio del bot
+sudo systemctl start salesmind
+sudo systemctl enable salesmind
+
+# Probar y reiniciar Nginx
+sudo nginx -t
+sudo systemctl restart nginx
+
+6. Conectar con Telegram
+Finalmente, actualiza el webhook de Telegram para apuntar a tu servidor. Pega la siguiente URL en tu navegador, reemplazando tu IP y tu token:
+
+[https://api.telegram.org/bot](https://api.telegram.org/bot)<TU_TOKEN>/setWebhook?url=http://<TU_IP_PUBLICA>/salesmind/telegram_webhook
+
+¡Tu asistente SalesMind ya está en línea y listo para vender!

@@ -45,6 +45,8 @@ def create_app():
     from .drafting.routes import drafting_bp
     app.register_blueprint(drafting_bp)
     # --- FIN ---
+    from .bot.routes import bot_bp
+    app.register_blueprint(bot_bp)
     
     @app.cli.command('init-db')
     def init_db_command():
@@ -52,3 +54,6 @@ def create_app():
         click.echo('Base de datos inicializada.')
 
     return app
+
+
+

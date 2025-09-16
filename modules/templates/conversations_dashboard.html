@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Dashboard de Conversaciones</h2>
+        <span class="badge bg-primary rounded-pill">{{ conversations|length }} conversaciones activas</span>
+    </div>
+
+    {% if conversations %}
+        {% for chat_id, messages in conversations.items() %}
+        <div class="card mb-4">
+            <div class="card-header">
+                <strong>Conversación con Usuario ID:</strong> {{ chat_id }}
+            </div>
+            <div class="card-body conversation-box">
+                {% for message in messages %}
+                    <div class="chat-bubble {% if message.sender == 'user' %}user-bubble{% else %}bot-bubble{% endif %}">
+                        <div class="message-text">{{ message.message_text }}</div>
+                        <div class="message-time">{{ message.timestamp.split('.')[0] }}</div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            Aún no se han registrado conversaciones. ¡Habla con tu bot en Telegram para empezar!
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block styles %}
+{{ super() }}
+<style>
+    .conversation-box {
+        max-height: 400px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        padding: 1rem;
+    }
+    .chat-bubble {
+        max-width: 70%;
+        padding: 10px 15px;
+        border-radius: 20px;
+        margin-bottom: 10px;
+        line-height: 1.4;
+    }
+    .user-bubble {
+        background-color: #007bff;
+        color: white;
+        align-self: flex-end;
+        border-bottom-right-radius: 5px;
+    }
+    .bot-bubble {
+        background-color: #f0f0f0;
+        color: #333;
+        align-self: flex-start;
+        border-bottom-left-radius: 5px;
+    }
+    .message-text {
+        white-space: pre-wrap; /* Mantiene los saltos de línea */
+    }
+    .message-time {
+        font-size: 0.75em;
+        color: #eee;
+        text-align: right;
+        margin-top: 5px;
+    }
+    .bot-bubble .message-time {
+        color: #888;
+    }
+</style>
+{% endblock %}

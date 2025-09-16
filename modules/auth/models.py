@@ -1,79 +1,3 @@
-# import sqlite3
-# import hashlib
-# import os
-# from flask_login import UserMixin
-# from config import Config
-
-# def get_db_connection():
-#     # Asegurarse de que el directorio 'instance' exista
-#     instance_path = os.path.dirname(Config.DATABASE_PATH)
-#     if not os.path.exists(instance_path):
-#         os.makedirs(instance_path)
-#     conn = sqlite3.connect(Config.DATABASE_PATH)
-#     conn.row_factory = sqlite3.Row
-#     return conn
-
-# def init_db():
-#     conn = get_db_connection()
-#     c = conn.cursor()
-#     # Tabla de Usuarios
-#     c.execute('''
-#         CREATE TABLE IF NOT EXISTS users (
-#             id INTEGER PRIMARY KEY AUTOINCREMENT,
-#             username TEXT UNIQUE NOT NULL,
-#             email TEXT UNIQUE NOT NULL,
-#             password_hash TEXT NOT NULL,
-#             role TEXT DEFAULT 'user'
-#         )
-#     ''')
-#     conn.commit()
-#     conn.close()
-
-# def hash_password(password):
-#     return hashlib.sha256(password.encode('utf-8')).hexdigest()
-
-# def check_password(hashed_password, password):
-#     return hashed_password == hashlib.sha256(password.encode('utf-8')).hexdigest()
-
-# class User(UserMixin):
-#     def __init__(self, id, username, email, role):
-#         self.id = id
-#         self.username = username
-#         self.email = email
-#         self.role = role
-
-#     @staticmethod
-#     def get(user_id):
-#         conn = get_db_connection()
-#         user = conn.execute('SELECT * FROM users WHERE id = ?', (user_id,)).fetchone()
-#         conn.close()
-#         if user:
-#             return User(user['id'], user['username'], user['email'], user['role'])
-#         return None
-
-#     @staticmethod
-#     def get_by_username(username):
-#         conn = get_db_connection()
-#         user = conn.execute('SELECT * FROM users WHERE username = ?', (username,)).fetchone()
-#         conn.close()
-#         return user
-
-#     @staticmethod
-#     def create(username, email, password):
-#         conn = get_db_connection()
-#         try:
-#             conn.execute(
-#                 'INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)',
-#                 (username, email, hash_password(password))
-#             )
-#             conn.commit()
-#             return True
-#         except sqlite3.IntegrityError:
-#             return False
-#         finally:
-#             conn.close()
-
-
 import sqlite3
 import hashlib
 import os
@@ -93,6 +17,18 @@ def init_db():
     conn = get_db_connection()
     c = conn.cursor()
     
+    # Crea la tabla para guardar las conversaciones si no existe
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS conversations (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            chat_id INTEGER NOT NULL,
+            sender TEXT NOT NULL,
+            message_text TEXT NOT NULL,
+            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+    ''')
+    # --- FIN DEL BLOQUE ---
+
     # Tabla de Usuarios con el campo 'role'
     c.execute('''
         CREATE TABLE IF NOT EXISTS users (

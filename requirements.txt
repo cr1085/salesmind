@@ -11,3 +11,4 @@ langchain
 langchain-community
 sentence-transformers
 langchain-google-genai
+python-telegram-bot
