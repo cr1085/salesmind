@@ -105,6 +105,7 @@
 # ==================================================================
 
 from flask import Blueprint, request, jsonify
+from twilio.twiml.messaging_response import MessagingResponse
 from flask_login import login_required, current_user
 import os
 import sqlite3
@@ -171,6 +172,64 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
+
+
+# NUEVA FUNCIÓN "CEREBRO"
+def get_rag_response(question: str) -> dict:
+    """
+    Esta es la función central de RAG. Recibe una pregunta y devuelve
+    un diccionario con la respuesta y las fuentes.
+    """
+    if not vector_store:
+        return {'answer': 'Error: La Base de Conocimiento no está disponible.', 'sources': [], 'media_url': None}
+
+    try:
+        if Config.AI_PROVIDER == 'google':
+            llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash-latest", google_api_key=Config.GOOGLE_API_KEY, temperature=0.1)
+        else:
+            llm = Ollama(model="phi3:mini", temperature=0.1)
+    except Exception as e:
+        return {'answer': f"Error al inicializar el modelo de IA: {e}", 'sources': [], 'media_url': None}
+
+    qa_chain = RetrievalQA.from_chain_type(
+        llm=llm,
+        chain_type="stuff",
+        retriever=vector_store.as_retriever(search_kwargs={"k": 4}),
+        return_source_documents=True,
+        chain_type_kwargs={"prompt": PROMPT}
+    )
+
+    try:
+        result = qa_chain.invoke({"query": question})
+    except Exception as e:
+        print(f"ERROR al ejecutar la cadena RAG: {e}")
+        return {'answer': "Ocurrió un error al procesar la respuesta.", 'sources': [], 'media_url': None}
+
+    sources = []
+    if result.get('source_documents'):
+        seen_sources = set()
+        for doc in result['source_documents']:
+            source_name = doc.metadata.get('source', 'Fuente desconocida')
+            if source_name not in seen_sources:
+                sources.append(source_name)
+                seen_sources.add(source_name)
+
+    # --- Lógica para detectar y adjuntar documentos ---
+    ai_text = result.get('result', 'No se pudo generar una respuesta.')
+    media_url = None
+
+    # (Aquí pondremos la lógica para catálogos en el futuro)
+    # Ejemplo: if "[DOCUMENT:" in ai_text: ...
+
+    return {
+        'answer': ai_text,
+        'sources': sources,
+        'media_url': media_url
+    }
+
+
+@assistant_bp.route('/ask', methods=['POST'])
+@login_required
 @assistant_bp.route('/ask', methods=['POST'])
 @login_required
 def ask():
@@ -180,45 +239,10 @@ def ask():
     if not question:
         return jsonify({'error': 'No se proporcionó ninguna pregunta.'}), 400
 
-    # Si el índice no se cargó, devolvemos un error claro
-    if not vector_store:
-        return jsonify({'answer': 'Error: La Base de Conocimiento Maestra no está disponible. Por favor, ejecute el indexador y reinicie el servidor.', 'sources': []}), 500
+    # Llamamos a nuestro nuevo cerebro centralizado
+    response_dict = get_rag_response(question)
 
-    # 1. Seleccionar el modelo de IA (Ollama o Google) desde config.py
-    try:
-        if Config.AI_PROVIDER == 'google':
-            llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash-latest", google_api_key=Config.GOOGLE_API_KEY, temperature=0.1)
-        else:
-            llm = Ollama(model="phi3:mini", temperature=0.1)
-    except Exception as e:
-        return jsonify({'answer': f"Error al inicializar el modelo de IA: {e}", 'sources': []}), 500
-
-    # 2. Configurar y ejecutar la cadena de RAG con la biblioteca persistente
-    qa_chain = RetrievalQA.from_chain_type(
-        llm=llm,
-        chain_type="stuff",
-        retriever=vector_store.as_retriever(search_kwargs={"k": 4}), # Busca 4 fragmentos relevantes
-        return_source_documents=True,
-        chain_type_kwargs={"prompt": PROMPT}
-    )
-
-    try:
-        result = qa_chain.invoke({"query": question})
-    except Exception as e:
-        print(f"ERROR al ejecutar la cadena RAG: {e}")
-        return jsonify({'answer': "Ocurrió un error al procesar la respuesta de la IA.", 'sources': []}), 500
-
-    # 3. Formatear las fuentes para enviarlas al frontend
-    sources = []
-    if result.get('source_documents'):
-        seen_sources = set()
-        for doc in result['source_documents']:
-            source_name = doc.metadata.get('source', 'Fuente desconocida')
-            if source_name not in seen_sources:
-                sources.append(source_name)
-                seen_sources.add(source_name)
-    
-    # Guardamos la consulta en el log
+    # Guardamos el log (esta lógica no cambia)
     try:
         conn = get_db_connection()
         conn.execute('INSERT INTO query_log (user_id, question) VALUES (?, ?)', (current_user.id, question))
@@ -227,8 +251,97 @@ def ask():
     except Exception as e:
         print(f"Error al registrar la consulta en el log: {e}")
 
-    # 4. Devolvemos una respuesta JSON estructurada
+    # Devolvemos la respuesta
     return jsonify({
-        'answer': result.get('result', 'No se pudo generar una respuesta.'),
-        'sources': sources
+        'answer': response_dict['answer'],
+        'sources': response_dict['sources']
     })
+# def ask():
+#     data = request.get_json()
+#     question = data.get('question')
+
+#     if not question:
+#         return jsonify({'error': 'No se proporcionó ninguna pregunta.'}), 400
+
+#     # Si el índice no se cargó, devolvemos un error claro
+#     if not vector_store:
+#         return jsonify({'answer': 'Error: La Base de Conocimiento Maestra no está disponible. Por favor, ejecute el indexador y reinicie el servidor.', 'sources': []}), 500
+
+#     # 1. Seleccionar el modelo de IA (Ollama o Google) desde config.py
+#     try:
+#         if Config.AI_PROVIDER == 'google':
+#             llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash-latest", google_api_key=Config.GOOGLE_API_KEY, temperature=0.1)
+#         else:
+#             llm = Ollama(model="phi3:mini", temperature=0.1)
+#     except Exception as e:
+#         return jsonify({'answer': f"Error al inicializar el modelo de IA: {e}", 'sources': []}), 500
+
+#     # 2. Configurar y ejecutar la cadena de RAG con la biblioteca persistente
+#     qa_chain = RetrievalQA.from_chain_type(
+#         llm=llm,
+#         chain_type="stuff",
+#         retriever=vector_store.as_retriever(search_kwargs={"k": 4}), # Busca 4 fragmentos relevantes
+#         return_source_documents=True,
+#         chain_type_kwargs={"prompt": PROMPT}
+#     )
+
+#     try:
+#         result = qa_chain.invoke({"query": question})
+#     except Exception as e:
+#         print(f"ERROR al ejecutar la cadena RAG: {e}")
+#         return jsonify({'answer': "Ocurrió un error al procesar la respuesta de la IA.", 'sources': []}), 500
+
+#     # 3. Formatear las fuentes para enviarlas al frontend
+#     sources = []
+#     if result.get('source_documents'):
+#         seen_sources = set()
+#         for doc in result['source_documents']:
+#             source_name = doc.metadata.get('source', 'Fuente desconocida')
+#             if source_name not in seen_sources:
+#                 sources.append(source_name)
+#                 seen_sources.add(source_name)
+    
+#     # Guardamos la consulta en el log
+#     try:
+#         conn = get_db_connection()
+#         conn.execute('INSERT INTO query_log (user_id, question) VALUES (?, ?)', (current_user.id, question))
+#         conn.commit()
+#         conn.close()
+#     except Exception as e:
+#         print(f"Error al registrar la consulta en el log: {e}")
+
+#     # 4. Devolvemos una respuesta JSON estructurada
+#     return jsonify({
+#         'answer': result.get('result', 'No se pudo generar una respuesta.'),
+#         'sources': sources
+#     })
+
+# --- INICIO: NUEVA RUTA PARA WHATSAPP CON TWILIO ---
+
+@assistant_bp.route("/whatsapp_webhook", methods=['POST'])
+def whatsapp_webhook():
+    """
+    Este webhook recibe los mensajes que nos reenvía Twilio desde WhatsApp.
+    """
+    # 1. Obtenemos el mensaje del usuario del formato de Twilio
+    incoming_msg = request.values.get('Body', '').lower()
+    print(f"Mensaje recibido de WhatsApp: {incoming_msg}")
+
+    # 2. Llamamos a nuestro mismo "cerebro" de IA
+    response_dict = get_rag_response(incoming_msg)
+
+    # 3. Creamos la respuesta en el formato XML que Twilio espera (TwiML)
+    resp = MessagingResponse()
+    message = resp.message()
+    
+    # Añadimos el texto de la respuesta
+    message.body(response_dict['answer'])
+    
+    # Si la IA nos dio una URL de un documento, la adjuntamos
+    if response_dict.get('media_url'):
+        message.media(response_dict['media_url'])
+
+    # 4. Devolvemos la respuesta a Twilio
+    return str(resp)
+
+# --- FIN: NUEVA RUTA PARA WHATSAPP ---
